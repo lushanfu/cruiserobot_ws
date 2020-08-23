@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/lsf/LSF/cruiserobot_ws/devel/setup.sh

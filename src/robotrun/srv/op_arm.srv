@@ -1,0 +1,4 @@
+int32 stopThreshold
+int32 travelDirection
+---
+string feedmsg

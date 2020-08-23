@@ -1,0 +1,2 @@
+cvsion:robotrun
+-DCATKIN_DEVEL_PREFIX=/home/lsf/LSF/cruiserobot_ws/devel -DCMAKE_INSTALL_PREFIX=/home/lsf/LSF/cruiserobot_ws/install -G Unix Makefiles

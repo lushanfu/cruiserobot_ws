@@ -1,0 +1,8 @@
+prefix=/home/lsf/LSF/cruiserobot_ws/install
+
+Name: cvsion
+Description: Description of cvsion
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
