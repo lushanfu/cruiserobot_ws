@@ -1,0 +1,4 @@
+int32 anchor
+
+---
+int32 status   #-1 :network error; -2: rotate camera error; 0: ok
