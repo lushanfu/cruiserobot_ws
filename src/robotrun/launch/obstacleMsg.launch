@@ -1,0 +1,4 @@
+<launch>
+<param name="obstacle_type" value="-1"  />
+<param  name="distance" value="100" />
+</launch>

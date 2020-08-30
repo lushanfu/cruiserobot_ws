@@ -1,0 +1,3 @@
+int32 traveldirection
+float32 distance
+int32 obstacletype
