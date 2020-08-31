@@ -66,7 +66,7 @@ class AnchorPos
     public:
        int A1,A2,A3,B1,B2,C1,C2,C3,D1,D2,D3,E1,E2,F1,F2,F3,G1,G2,G3,G4,G5,G6,G7,M1,M2,N1,N2;
     public:
-       void SetAnchor(int A1, int A2, int A3, int B1, int B2, int C1, int C2, int C3, int D1, int D2, int D3, int E1, int E2, int F1, int F2, int F3, int G1, int G2, int G3, int G4, int G5, int G6, int G7, int M1, int M2, int N1, int N2)
+       void SetAnchor(int A1=6, int A2=20, int A3=40, int B1=36, int B2=40, int C1=16, int C2=41, int C3=16, int D1=6, int D2=39, int D3=40, int E1=36, int E2=40, int F1=1, int F2=21, int F3=21, int G1=87, int G2=6, int G3=200, int G4=6, int G5=29, int G6=180, int G7=145, int M1=-1, int M2=-1, int N1=-1, int N2=-1)
         {
             A1 = A1;
             A2 = A2;

@@ -162,9 +162,8 @@ target_link_libraries(action common ${catkin_LIBRARIES})
 add_executable(autoTravel src/autoTravel.cpp)
 target_link_libraries(autoTravel common ${catkin_LIBRARIES})
 
-
-add_executable(test2 src/test2.cpp)
-target_link_libraries(test2  ${catkin_LIBRARIES})
+add_executable(scale_order src/scale_order.cpp)
+target_link_libraries(scale_order common ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
