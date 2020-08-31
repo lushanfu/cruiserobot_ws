@@ -12,7 +12,7 @@ def rec_socket_msg():
     global obstacletype
     print("start listen service")
     s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    s.bind(('192.168.3.33',9998))
+    s.bind(('192.168.3.33',9999))
     s.listen(5)
     while True:
         sock,addr=s.accept()

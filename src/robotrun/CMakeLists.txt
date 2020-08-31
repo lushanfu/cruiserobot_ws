@@ -55,6 +55,7 @@ add_message_files(
   fixed_arm.msg
   moving_arm.msg
   robot_data.msg
+  obstacle.msg
   
   
 #   Message1.msg
@@ -65,6 +66,7 @@ add_message_files(
 add_service_files(
   FILES
   op_arm.srv
+  camera_motion.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -138,8 +140,8 @@ include
 add_library(common SHARED src/common.cpp)
 add_dependencies(common robotrun_generate_messages_cpp)
 
-add_executable(action src/action.cpp)
-target_link_libraries(action common ${catkin_LIBRARIES})
+add_executable(op_cam_motion src/op_cam_motion.cpp)
+target_link_libraries(op_cam_motion common ${catkin_LIBRARIES})
 
 add_executable(op_arm_move src/operation_arm_move.cpp)
 target_link_libraries(op_arm_move common ${catkin_LIBRARIES})
@@ -150,10 +152,19 @@ target_link_libraries(robot_msg common ${catkin_LIBRARIES})
 add_executable(rec_robot_msg src/listen_robot_msg.cpp)
 target_link_libraries(rec_robot_msg common ${catkin_LIBRARIES})
 
+add_executable(camera_motion src/camera_motion.cpp)
+target_link_libraries(camera_motion  ${catkin_LIBRARIES})
 
 
+add_executable(action src/action.cpp)
+target_link_libraries(action common ${catkin_LIBRARIES})
+
+add_executable(autoTravel src/autoTravel.cpp)
+target_link_libraries(autoTravel common ${catkin_LIBRARIES})
 
 
+add_executable(test2 src/test2.cpp)
+target_link_libraries(test2  ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

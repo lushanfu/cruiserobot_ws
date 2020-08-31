@@ -782,7 +782,29 @@ void CFixedArmParseData::movingArmMovingControl(MotorState motorState,int thresh
         netT.netTransfer(Ip,port,sttr,11);
     }
 
-
+void CFixedArmParseData::cabinetMotionControl(MotorState motorState,int threshold)
+{
+    int motor;
+        switch (motorState)
+        {
+            case 0:
+                motor=0;
+                break;
+            case 1:
+                motor=1;
+                break;
+            case 2:
+                motor=2;
+                break;
+            case 3:
+                motor=3;
+                break;
+            default:
+               return;
+        }
+        char sttr[]={0x0f,0,0,0,0,0,2,0,motor,threshold};
+        netT.netTransfer(Ip,port,sttr,10);
+}
 
 CMovingArmParseData::CMovingArmParseData(){}
 CMovingArmParseData::~CMovingArmParseData(){}
@@ -912,6 +934,278 @@ robotrun::robot_data CUtils::obtainMsg()
     return robotData;
 }
 
+void CUtils::armX2PosMotion(robotArmProperty o)
+{
+    CFixedArmParseData fixedParse;
+    CMovingArmParseData movingParse;
+    time_t first,second; 
+    first=time(NULL);
+    while (true)
+    {
+        second=time(NULL);
+        int secdiff=(int)difftime(second,first);
+       
+        if(o.armState==UnitType::fixedArm)
+        {
+            auto horizonData=fixedParse.horizontalRotAng();
+            if((o.motorState==MotorState::walkForward && horizonData>= o.threshold)||(o.motorState==MotorState::walkBackward && horizonData<=o.threshold))
+            {
+                fixedParse.horizontalArmRotMotor(MotorState::brake,0,0,0);
+                return;
+            }
+            if(secdiff>0)
+            {
+                 first=time(NULL);
+                 fixedParse.horizontalArmRotMotor(o.motorState,100,o.threshold,0);
+            }
+            
+        }
+        else
+        {
+            auto horizonData=movingParse.horizontalRotAng();
+            if((o.motorState==MotorState::walkForward && horizonData>=o.threshold) || (o.motorState==MotorState::walkBackward && horizonData<=o.threshold))
+            {
+                movingParse.horizontalArmRotMotor(MotorState::brake,0,0,0);
+                return;
+            }
+            if(secdiff>0)
+            {
+                first=time(NULL);
+                movingParse.horizontalArmRotMotor(o.motorState,100,o.threshold,0);
+            }
+        }
+    }   
+}
+void CUtils::armY2PosMotion(robotArmProperty o)
+{
+    CFixedArmParseData  fixedParse;
+    CMovingArmParseData movingParse;
+    time_t first,second; 
+    first=time(NULL);
+    while (true)
+    {
+        second=time(NULL);
+        int secdiff=(int)difftime(second,first);
+        if(o.armState==UnitType::fixedArm)
+        {
+            auto verticalData=fixedParse.verticalRotAng();
+            if((o.motorState==MotorState::walkForward && verticalData>= o.threshold)||(o.motorState==MotorState::walkBackward && verticalData<=o.threshold))
+            {
+                fixedParse.verticalArmRotMotor(MotorState::brake,0,0);
+                return;
+            }
+            if(secdiff>0)
+            {
+                 first=time(NULL);
+                 fixedParse.verticalArmRotMotor(o.motorState,100,o.threshold);
+            }     
+        }
+        else
+        {
+            auto verticalData=movingParse.verticalRotAng();
+            if((o.motorState==MotorState::walkForward && verticalData>=o.threshold) || (o.motorState==MotorState::walkBackward && verticalData<=o.threshold))
+            {
+                movingParse.verticalArmRotMotor(MotorState::brake,0,0);
+                return;
+            }
+            if(secdiff>0)
+            {
+                first=time(NULL);
+                movingParse.verticalArmRotMotor(o.motorState,100,o.threshold);
+            }
+        }
+    } 
+}
+void CUtils::armZ2PosMotion(robotArmProperty o)
+{
+    CFixedArmParseData  fixedParse;
+    CMovingArmParseData movingParse;
+    time_t first,second; 
+    first=time(NULL);
+    while (true)
+    {
+        second=time(NULL);
+        int secdiff=(int)difftime(second,first);
+        auto stayWiresDis=movingParse.stayWireSensorDis();
+        if((o.motorState==MotorState::walkBackward && stayWiresDis>=o.threshold) || (o.motorState==MotorState::walkForward && stayWiresDis<=o.threshold))
+        {
+            fixedParse.movingArmMovingControl(MotorState::brake,0,0);
+            return;
+        }   
+        if(secdiff>0)
+        {
+            first=time(NULL);
+            fixedParse.movingArmMovingControl(o.motorState,100,10);
+        }                
+    } 
+}
+void CUtils::opZ2Pos(robotArmProperty o)
+{
+    CFixedArmParseData  fixedParse;
+    CMovingArmParseData movingParse;
+    time_t first,second; 
+    first=time(NULL);
+    int k=1;
+    while (true)
+    {
+        second=time(NULL);
+        int secdiff=(int)difftime(second,first);
+        auto opArmApproachDis=fixedParse.opArmApproachDis();
+        if (opArmApproachDis>=o.threshold)
+        {
+            return;
+        }
+        auto stayWiresDis=movingParse.stayWireSensorDis();
+        if(1==k)
+        {
+            k+=1;
+            fixedParse.opArmMovingControl(o.motorState,100,0);
+            continue;
+        }
+        if(stayWiresDis>=o.threshold)
+        {
+            fixedParse.opArmMovingControl(MotorState::brake,0,0);
+            return;
+        }
+        if(secdiff>0)
+        {
+            first=time(NULL);
+            fixedParse.movingArmMovingControl(o.motorState,100,10);
+        }                
+    } 
 
+}
+void CUtils::fixedArmX2Pos(int threshold)
+{
+    CFixedArmParseData fixedArm;
+    robotArmProperty   o;
+    auto horizonData=fixedArm.horizontalRotAng();
+    o.armState=UnitType::fixedArm;
+    o.threshold=threshold;
+    o.speed=100;
+    o.motorState=MotorState::walkForward;
+    if(threshold<horizonData)
+    {
+       o.motorState=MotorState::walkBackward;
+    }
+    armX2PosMotion(o);
+}
+void CUtils::fixedArmY2Pos(int threshold)
+{
+    CFixedArmParseData fixedArm;
+    robotArmProperty   o;
+    auto verticalData=fixedArm.verticalRotAng();
+    o.armState=UnitType::fixedArm;
+    o.threshold=threshold;
+    o.speed=100;
+    o.motorState=MotorState::walkForward;
+    if(threshold<verticalData)
+    {
+       o.motorState=MotorState::walkBackward;
+    }
+    armY2PosMotion(o);
+}
+void CUtils::movingArmX2Pos(int threshold)
+{
+    CMovingArmParseData movingArm;
+    robotArmProperty   o;
+    auto horizonData=movingArm.horizontalRotAng();
+    o.armState=UnitType::movingArm;
+    o.threshold=threshold;
+    o.speed=100;
+    o.motorState=MotorState::walkForward;
+    if(threshold<horizonData)
+    {
+       o.motorState=MotorState::walkBackward;
+    }
+    armX2PosMotion(o);
+}
+void CUtils::movingArmY2Pos(int threshold)
+{
+    CMovingArmParseData movingArm;
+    robotArmProperty   o;
+    auto verticalData=movingArm.verticalRotAng();
+    o.armState=UnitType::movingArm;
+    o.threshold=threshold;
+    o.speed=100;
+    o.motorState=MotorState::walkForward;
+    if(threshold<verticalData)
+    {
+       o.motorState=MotorState::walkBackward;
+    }
+    armY2PosMotion(o);
+}
+void CUtils::movingArmZ2Pos(int threshold)
+{
+    CMovingArmParseData movingArm;
+    auto stayWiresDis=movingArm.stayWireSensorDis();
+    movingArm.motorTravelControl(MotorState::neutralPos,0);
+    robotArmProperty   o;
+    o.armState=UnitType::movingArm;
+    o.threshold=threshold;
+    o.speed=0;
+    o.motorState=MotorState::walkForward;
+    if(threshold<stayWiresDis)
+    {
+       o.motorState=MotorState::walkForward;
+    }
+    armZ2PosMotion(o);
+}
+
+void CUtils::operationArmZ2Pos(int threshold,int direction)
+{
+    robotArmProperty o;
+    o.motorState=MotorState::walkForward;
+    o.speed=0;
+    o.threshold=threshold;
+    o.armState=UnitType::fixedArm;
+    if(direction<0)
+    {
+        o.motorState=MotorState::walkBackward;
+    }
+    opZ2Pos(o);
+}
+void CUtils::cabinet2Pos(robotArmProperty o)
+{
+    CFixedArmParseData fixedParse;
+    time_t first,second; 
+    first=time(NULL);
+    int k=1;
+    while (true)
+    {
+        second=time(NULL);
+        int secdiff=(int)difftime(second,first);
+        auto stayWiresDis=fixedParse.controlCabinetStayWireSensorDis();
+        if((MotorState::walkForward==o.motorState && stayWiresDis >= o.threshold) || (MotorState::walkBackward==o.motorState && stayWiresDis <= o.threshold))
+        {
+            fixedParse.cabinetMotionControl(MotorState::brake,0);
+            return;
+        }
+        if(1==k)
+        {
+            fixedParse.cabinetMotionControl(o.motorState,100);
+            k+=1;
+            continue;
+        }
+        if(secdiff>0)
+        {
+            first=time(NULL);
+            fixedParse.cabinetMotionControl(o.motorState,100);
+        }       
+    }
+    
+
+}
+void CUtils::controlCabinet2Pos(int threshold)
+{
+    CFixedArmParseData fixedParse;
+    auto stayWire=fixedParse.controlCabinetStayWireSensorDis();
+    robotArmProperty o;
+    o.motorState=MotorState::walkForward;
+    o.threshold=threshold;
+    if(threshold<stayWire)
+      o.motorState=MotorState::walkBackward;
+    cabinet2Pos(o);
+}
 
 

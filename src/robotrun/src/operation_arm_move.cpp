@@ -10,7 +10,7 @@ void* op_arm_move(void * arg)
 {
      CFixedArmParseData fixedParse;
      int motor=*((int*)arg);
-    ros::Rate rate(8);
+    ros::Rate rate(4);
      while (true)
      {
          if(1==motor)
