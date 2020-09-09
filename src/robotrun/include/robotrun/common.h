@@ -51,8 +51,8 @@ enum MotorState
 
 struct SpeedType
 {
-   unsigned  int bagNum;
-   unsigned  int distance;
+   unsigned  int bagNum=-1;
+   unsigned  int distance=-1;
 };
 struct robotArmProperty // Description prameters of robot_arm motion control
 {
@@ -61,41 +61,9 @@ struct robotArmProperty // Description prameters of robot_arm motion control
     int        threshold;
     int        speed;
 }; 
-class AnchorPos
+struct AnchorPos
 {
-    public:
-       int A1,A2,A3,B1,B2,C1,C2,C3,D1,D2,D3,E1,E2,F1,F2,F3,G1,G2,G3,G4,G5,G6,G7,M1,M2,N1,N2;
-    public:
-       void SetAnchor(int A1=6, int A2=20, int A3=40, int B1=36, int B2=40, int C1=16, int C2=41, int C3=16, int D1=6, int D2=39, int D3=40, int E1=36, int E2=40, int F1=1, int F2=21, int F3=21, int G1=87, int G2=6, int G3=200, int G4=6, int G5=29, int G6=180, int G7=145, int M1=-1, int M2=-1, int N1=-1, int N2=-1)
-        {
-            A1 = A1;
-            A2 = A2;
-            A3 = A3;
-            B1 = B1;
-            B2 = B2;
-            C1 = C1;
-            C2 = C2;
-            C3 = C3;
-            D1 = D1;
-            D2 = D2;
-            D3 = D3;
-            E1 = E1;
-            E2 = E2;
-            F1 = F1;
-            F2 = F2;
-            F3 = F3;
-            G1 = G1;
-            G2 = G2;
-            G3 = G3;
-            G4 = G4;
-            G5 = G5;
-            G6 = G6;
-            G7 = G7;
-            M1 = M1;
-            M2 = M2;
-            N1 = N1;
-            N2 = N2;
-        }
+    int A1=6; int A2=20; int A3=40; int B1=36; int B2=40; int C1=16; int C2=41; int C3=16; int D1=6; int D2=39; int D3=40; int E1=36; int E2=40; int F1=1; int F2=21; int F3=21; int G1=87; int G2=6; int G3=200; int G4=6; int G5=29; int G6=180; int G7=145; int M1=-1; int M2=-1; int N1=-1; int N2=-1;   
 };
 class BaseData
 {
@@ -341,13 +309,17 @@ class CUtils
     void armX2PosMotion(robotArmProperty o);
     void armY2PosMotion(robotArmProperty o);
     void armZ2PosMotion(robotArmProperty o);
+
     void fixedArmX2Pos(int threshold);
     void fixedArmY2Pos(int threshold);
+
     void movingArmX2Pos(int threshold);
     void movingArmY2Pos(int threshold);
     void movingArmZ2Pos(int threshold);
+    
     void opZ2Pos(robotArmProperty o);
     void operationArmZ2Pos(int threshold,int direction=-1);
     void cabinet2Pos(robotArmProperty o);
     void controlCabinet2Pos(int threshold);
+    void travelFixedDistance(UnitType t,double distance);
 };

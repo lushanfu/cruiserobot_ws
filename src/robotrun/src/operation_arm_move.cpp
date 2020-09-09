@@ -52,7 +52,6 @@ bool oparm_move(robotrun::op_arm::Request &req,robotrun::op_arm::Response &res)
     pthread_t threads[1];
     pthread_create(&threads[0],NULL,&op_arm_move,&travelDirection);
   
-    
     while (true)
     {
         if (travelDirection==0 && fixedParse.opArmApproachDis()>=req.stopThreshold  || travelDirection==1 && movedParse.opArmApproachDis()>=req.stopThreshold)

@@ -12,7 +12,7 @@ def rec_socket_msg():
     global obstacletype
     print("start listen service")
     s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    s.bind(('192.168.3.33',9999))
+    s.bind(('192.168.3.33',9992))
     s.listen(5)
     while True:
         sock,addr=s.accept()
@@ -20,7 +20,6 @@ def rec_socket_msg():
             data=sock.recv(1024)
             if not data or data.decode('utf-8')=='exit':
                 break
-           
             rec=str(data.decode("utf-8"))
             obstacletype,distance=int(rec.split(':')[0]),float(rec.split(':')[1])
             sock.send(str(traveldirection))

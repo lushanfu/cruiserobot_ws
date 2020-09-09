@@ -326,8 +326,10 @@ SpeedType CParseData::travelSpeed(UnitType t)
            speed.distance=-1;
            return speed;
        }
-       speed.bagNum=rec.content[rec.length-1];
-       speed.distance=rec.content[rec.length-2];
+       unsigned char bagNum=rec.content[rec.length-1];
+       unsigned char dis=rec.content[rec.length-2];
+       speed.bagNum=(int)bagNum;
+       speed.distance=(int)dis;
        return speed;
     }
 int CParseData::horizontalTorsion(UnitType t)
@@ -877,6 +879,7 @@ void CMovingArmParseData::onLineClutchControl(MotorState motorState)
     CParseData::onLineClutchControl(UnitType::movingArm,motorState);
 }
 
+
 CUtils::CUtils(){}
 CUtils::~CUtils(){}
 robotrun::robot_data CUtils::obtainMsg()
@@ -887,47 +890,93 @@ robotrun::robot_data CUtils::obtainMsg()
     CFixedArmParseData fixedParse;
     CMovingArmParseData movingParse;
     
-
-
-
     fixedData.hArmBagNum=fixedParse.horizontalArmBagNum();
+    cout<<"fixedData.hArmBagNum ->"<<fixedData.hArmBagNum<<endl;
+
     fixedData.movingArmBagNum=fixedParse.movingArmBagNum();
+    cout<<"fixedData.movingArmBagNum ->"<<fixedData.movingArmBagNum<<endl;
 
     BaseData bd=fixedParse.horizontalIOLineState();
     fixedData.hIOLine_1=bd.getHorizontalIOLineState();
+    cout<<"fixedData.hIOLine_1 ->"<<fixedData.hIOLine_1<<endl;
+
     fixedData.hIOLine_2=bd.getHorizontalIOLineState2();
+    cout<<"ffixedData.hIOLine_2 ->"<<fixedData.hIOLine_2<<endl;
+
     fixedData.vIOLine=bd.getVerticalIOLineState();
+    cout<<"fixedData.vIOLine ->"<<fixedData.vIOLine<<endl;
+
     fixedData.hArmOnLineLock=bd.getHorizontalArmOnLineLock();
+    cout<<"fixedData.hArmOnLineLock ->"<<fixedData.hArmOnLineLock<<endl;
+
     fixedData.hArmOnLineUnlock=bd.getHorizontalArmOnLineUnLock();
+    cout<<" fixedData.hArmOnLineUnlock->"<< fixedData.hArmOnLineUnlock<<endl;
 
     fixedData.hRotateAngle=fixedParse.horizontalRotAng();
+    cout<<" fixedData.hRotateAngle->"<< fixedData.hRotateAngle<<endl;
+
     fixedData.speed=fixedParse.travelSpeed().distance;
+    cout<<" fixedData.speed->"<< fixedData.speed<<endl;
+
     fixedData.hTorsion=fixedParse.horizontalTorsion();
+    cout<<" fixedData.hTorsion->"<< fixedData.hTorsion<<endl;
+
     fixedData.vRorateAngle=fixedParse.verticalRotAng();
+    cout<<" fixedData.vRorateAngle->"<< fixedData.vRorateAngle<<endl;
+
     fixedData.opArmDistance=fixedParse.opArmApproachDis();
+    cout<<" fixedData.opArmDistance->"<< fixedData.opArmDistance<<endl;
+
     //fixedData.controlCabinetBagNum=fixedParse.controlCabinetBagNum();
     fixedData.controlCabinetStayWireSensorDis=fixedParse.controlCabinetStayWireSensorDis();
-    fixedData.gps=fixedParse.gps();
-    fixedData.batteryCapcity=fixedParse.batteryCapcity();
+    cout<<" fixedData.controlCabinetStayWireSensorDis->"<< fixedData.controlCabinetStayWireSensorDis<<endl;
+
+    // fixedData.gps=fixedParse.gps();
+    // fixedData.batteryCapcity=fixedParse.batteryCapcity();
     
     
 
 
     movingData.hArmBagNum=movingParse.horizontalArmBagNum();
+    cout<<" movingData.hArmBagNum->"<< movingData.hArmBagNum<<endl;
+
+
     movingData.movingArmBagNum=movingParse.movingArmBagNum();
+    cout<<" movingData.movingArmBagNum->"<< movingData.movingArmBagNum<<endl;
+    
     BaseData bd2=movingParse.horizontalIOLineState();
     movingData.hIOLine_1=bd2.getHorizontalIOLineState();
+    cout<<" movingData.hIOLine_1->"<<movingData.hIOLine_1<<endl;
+    
     movingData.hIOLine_2=bd2.getHorizontalIOLineState2();
+    cout<<" movingData.hIOLine_2->"<<movingData.hIOLine_2<<endl;
+    
     movingData.vIOLine=bd2.getVerticalIOLineState();
+    cout<<" movingData.vIOLine->"<<movingData.vIOLine<<endl;
+    
     movingData.hArmOnLineLock=bd2.getHorizontalArmOnLineLock();
+    cout<<"movingData.hArmOnLineLock->"<<movingData.hArmOnLineLock<<endl;
+    
     movingData.hArmOnLineUnlock=bd2.getHorizontalArmOnLineUnLock();
+    cout<<" movingData.hArmOnLineUnlock->"<<movingData.hArmOnLineUnlock<<endl;
 
     movingData.hRotateAngle=movingParse.horizontalRotAng();
+    cout<<" movingData.hRotateAngle->"<<movingData.hRotateAngle<<endl;
+    
     movingData.speed=movingParse.travelSpeed().distance;
+    cout<<" movingData.speed->"<<movingData.speed<<endl;
+    
     movingData.hTorsion=movingParse.horizontalTorsion();
+    cout<<"movingData.hTorsion->"<<movingData.hTorsion<<endl;
+    
     movingData.vRorateAngle=movingParse.verticalRotAng();
+    cout<<"movingData.vRorateAngle->"<<movingData.vRorateAngle<<endl;
+    
     movingData.stayWiresDis=movingParse.stayWireSensorDis();
+    cout<<"movingData.stayWiresDis->"<<movingData.stayWiresDis<<endl;
+    
     movingData.opArmDistance=movingParse.opArmApproachDis();
+    cout<<"movingData.opArmDistance->"<<movingData.opArmDistance<<endl;
 
     robotData.fixedArmData=fixedData;
     robotData.movingArmData=movingData;
@@ -956,6 +1005,7 @@ void CUtils::armX2PosMotion(robotArmProperty o)
             if(secdiff>0)
             {
                  first=time(NULL);
+                 
                  fixedParse.horizontalArmRotMotor(o.motorState,100,o.threshold,0);
             }
             
@@ -1107,9 +1157,11 @@ void CUtils::fixedArmY2Pos(int threshold)
 }
 void CUtils::movingArmX2Pos(int threshold)
 {
+    
     CMovingArmParseData movingArm;
     robotArmProperty   o;
     auto horizonData=movingArm.horizontalRotAng();
+    
     o.armState=UnitType::movingArm;
     o.threshold=threshold;
     o.speed=100;
@@ -1208,4 +1260,55 @@ void CUtils::controlCabinet2Pos(int threshold)
     cabinet2Pos(o);
 }
 
+void CUtils::travelFixedDistance(UnitType t,double distance)
+{
+     double travelDis=0;
+    if(t==UnitType::fixedArm)
+    {
+       CFixedArmParseData fixedData;
+       int currentId=0;
+       int preId=-1;
+       while (travelDis<distance)
+       {
+           auto speed=fixedData.travelSpeed();
+           currentId=speed.bagNum;
+           if(preId!=currentId)
+           {
+               travelDis+=0.001*speed.distance;
+               preId=currentId;   
+           }
+           
 
+       }
+       
+    }
+    else
+    {
+       CMovingArmParseData movingData;
+       int currentId=0;
+       int preId=-1;
+       movingData.motorTravelControl(MotorState::walkForward,30);
+       time_t first,second; 
+       first=time(NULL);
+       while (travelDis<distance)
+       {
+           auto speed=movingData.travelSpeed();
+           currentId=speed.bagNum;
+           if(preId!=currentId)
+           {
+               travelDis+=0.001*speed.distance;
+               preId=currentId;   
+           }
+           second=time(NULL);
+           int secdiff=(int)difftime(second,first);
+           if(secdiff>0)
+            {
+                first=time(NULL);
+                movingData.motorTravelControl(MotorState::walkForward,50);
+            }
+            cout<<"distance is :"<<travelDis<<endl;
+       }
+        movingData.motorTravelControl(MotorState::neutralPos,0);
+    }
+
+}
